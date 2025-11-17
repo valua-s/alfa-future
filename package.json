@@ -1,0 +1,10 @@
+{
+  "name": "kou",
+  "private": true,
+  "dependencies": {
+    "swagger-ui-dist": "5.25.2"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.32"
+  }
+}
