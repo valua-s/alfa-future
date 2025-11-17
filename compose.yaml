@@ -1,0 +1,46 @@
+services:
+  app:
+    build:
+      args:
+        - "UID=${UID:-1000}"
+        - "GID=${GID:-1000}"
+      dockerfile: ./docker/app/Dockerfile
+      pull: true
+    depends_on:
+      - postgres
+    env_file: .env
+    user: "${UID:-1000}:${GID:-1000}"
+    init: true
+    logging:
+      driver: local
+    ports:
+      - "8000:8000"
+    restart: on-failure
+    networks:
+      - db_network
+  postgres:
+    container_name: local-db-container-alfa
+    image: docker.io/postgres:17
+    environment:
+      POSTGRES_USER: "${ALFA_FUTURE_SERVICE_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${ALFA_FUTURE_SERVICE_POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${ALFA_FUTURE_SERVICE_POSTGRES_DB}"
+    ports:
+      - "${ALFA_FUTURE_SERVICE_POSTGRES_OUT_PORT}:${ALFA_FUTURE_SERVICE_POSTGRES_PORT}"
+    init: true
+    logging:
+      driver: local
+    pull_policy: always
+    restart: on-failure
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - db_network
+
+volumes:
+  postgres-data: 
+
+networks:
+  db_network:
+    driver: bridge
+  

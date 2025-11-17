@@ -1,0 +1,47 @@
+[project]
+name = "alfa-future"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "monkeytype>=23.3.0",
+    "mypy>=1.17.1",
+    "pypdf>=5.8.0",
+    "python-multipart>=0.0.20",
+    "ruff>=0.12.11",
+    "sentence-transformers>=5.0.0",
+    "dishka==1.6",
+    # Litestar speedup
+    "fast-query-parsers==1.0.3",
+    # Uvicorn speedup
+    "httptools==0.6.4",
+    "litestar==2.16",
+    "pydantic[email]==2.11.7",
+    "pydantic-settings==2.10",
+    "typing-extensions>=4.14.0",
+    # asyncio & uvicorn speedup
+    "uvloop==0.21; implementation_name=='cpython' and (sys_platform=='darwin' or sys_platform=='linux')",
+    "redis>=6.4.0",
+    "pyjwt>=2.10.1",
+    "aiohttp>=3.12.15",
+    "uvicorn>=0.38.0",
+    "bcrypt>=5.0.0",
+    "alembic>=1.17.2",
+    "psycopg>=3.2.12",
+    "psycopg-binary>=3.2.12",
+    "pypdf2>=3.0.1",
+]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes errors
+    "I",  # isort import order
+    "B",  # flake8-bugbear
+    "S",  # security
+    "ERA", # ruff error codes
+]
