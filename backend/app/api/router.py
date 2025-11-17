@@ -4,6 +4,7 @@ from litestar import Router
 
 from app.api.accountain import router as accounting
 from app.api.auth import router as auth
+from app.api.agent_chat import router as agent_chat
 from app.api.finance import router as finance
 from app.api.lawyer import router as lawyer
 from app.api.main_page import router as main_page
@@ -21,5 +22,6 @@ api_router = Router(
         Router(path="/accounting", route_handlers=[accounting], middleware=[chat_middleware]),
         Router(path="/lawyer", route_handlers=[lawyer], middleware=[chat_middleware]),
         Router(path="/marketing", route_handlers=[marketing], middleware=[chat_middleware]),
+        Router(path="/agent", route_handlers=[agent_chat], middleware=[chat_middleware]),
     ]
 )

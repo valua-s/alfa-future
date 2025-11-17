@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:17-alpine
+    container_name: alfa-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-alfadb}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - alfa-network
+
+  # Backend (Litestar + Agent)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: alfa-backend
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
+      - BASE_API_URL=/alfa-future-assistaint
+      - ALEMBIC_RUN=prod
+      - ALFA_FUTURE_SERVICE_POSTGRES_DB=${POSTGRES_DB:-alfadb}
+      - ALFA_FUTURE_SERVICE_POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - ALFA_FUTURE_SERVICE_POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - ALFA_FUTURE_SERVICE_POSTGRES_HOST=postgres
+      - ALFA_FUTURE_SERVICE_POSTGRES_PORT=5432
+      - ALFA_FUTURE_SERVICE_POSTGRES_OUT_PORT=5432
+      - ORGANIZATION_INFO_SECRET_API_KEY=${ORG_API_KEY:-dummy-key}
+      - ORGANIZATION_INFO_API_URL=${ORG_API_URL:-https://example.org}
+      # Agent settings
+      - MODEL_DIR=/app/models
+      - LLAMA_GPU_LAYERS=0
+      - LLAMA_CTX=4096
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - agent-models:/app/models
+      - uploads:/app/backend/storage/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/alfa-future-assistaint/api/organization/organization-info"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - alfa-network
+
+  # Frontend (React + Bun)
+  frontend:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: alfa-frontend
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/alfa-future-assistaint
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - alfa-network
+
+volumes:
+  postgres-data:
+  agent-models:
+  uploads:
+
+networks:
+  alfa-network:
+    driver: bridge
+

@@ -44,8 +44,7 @@ async def get_financial_summary_by_assistaint(
     data: Annotated[PeriodDatesRequest,
                     Body(media_type=RequestEncodingType.JSON)],
 ) -> FinancialSummaryResponse:
-    # TODO: agent integration with financial summary
-   pass
+    pass
 
 
 @router.register
@@ -55,7 +54,6 @@ async def get_troubles_by_agent(
     data: Annotated[PeriodDatesRequest,
                     Body(media_type=RequestEncodingType.JSON)],
 ) -> File:
-    # TODO: agent integration with financial summary and create pdf
     return File(
         path="file_path",
         filename="file_dto.name",
@@ -68,7 +66,6 @@ async def get_troubles_by_agent(
 async def get_calendar(
     request: Request[Any, Any, Any],
 ) -> KeyMetricsResponse:
-    # TODO: agent integration with financial for key metrics
     pass
 
 
@@ -77,7 +74,6 @@ async def get_calendar(
 async def get_results(
     request: Request[Any, Any, Any],
 ) -> DownturnsResponse:
-    # TODO: agent integration with financial for downturns
     pass
 
 
@@ -99,4 +95,4 @@ async def post_message(
         from_service=AgentFunctions.FINANCE,
         files=files_bytes
     )
-    # TODO: agent integration with financial for chat
+    return ResponseFromBackDto(answer_text="not implemented")

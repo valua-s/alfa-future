@@ -1,3 +1,57 @@
-Dockerfile
-.venv
+# Git
+.git
+.gitignore
+
+# Python
 __pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+*.pyo
+*.pyd
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.encrypt
+.ansible_pass
+
+# Documentation
+*.md
+!README.md
+!DOCKER_QUICK_START.md
+
+# Build artifacts
+*.log
+
+# ВАЖНО: Модели НЕ копируются в образ!
+# Они скачиваются внутри контейнера при первом запуске
+agent/models/
+agent/models/*.gguf
+agent/models/*.bin
+agent/data/legal/*.index
+agent/data/legal/*.json
+
+# Backend storage (uploads)
+backend/storage/
+

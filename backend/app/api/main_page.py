@@ -39,7 +39,6 @@ async def get_other_account_mock(
 async def get_troubles_by_agent(
     request: Request[Any, Any, Any],
 ) -> TroublesOut:
-    # TODO: agent integration with troubles
     pass
 
 
@@ -56,5 +55,4 @@ async def get_calendar(
 async def get_results(
     request: Request[Any, Any, Any],
 ) -> ResultsOut:
-    # TODO: agent integration with results
     pass

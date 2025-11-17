@@ -33,4 +33,4 @@ async def post_message(
         from_service=AgentFunctions.FINANCE,
         files=files_bytes
     )
-    # TODO: agent integration with financial for chat
+    return ResponseFromBackDto(answer_text="not implemented")

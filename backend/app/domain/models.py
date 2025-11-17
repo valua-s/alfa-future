@@ -9,7 +9,9 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
+    JSON,
     String,
+    Text,
     func,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -41,6 +43,12 @@ class User(Base):
     organization_id: Mapped[int] = mapped_column(ForeignKey("organizations.id"))
 
     organization = relationship("Organization", back_populates="users", lazy="selectin")
+    chat_sessions = relationship(
+        "ChatSession",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+    )
 
 
 class Organization(Base):
@@ -65,7 +73,6 @@ class TaxDeadline(Base):
     report_year: Mapped[int] = mapped_column(Integer)
 
     def to_dict(self) -> dict[str, Any]:
-        """Преобразование в словарь для API"""
         return {
             "date": self.deadline_date.isoformat(),
             "title": self.title,
@@ -73,3 +80,47 @@ class TaxDeadline(Base):
             "importance": self.importance,
             "days_left": (self.deadline_date - datetime.now().date()).days
         }
+
+
+class ChatSession(Base):
+    __tablename__ = "chat_sessions"
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    agent_type: Mapped[str] = mapped_column(String(32), nullable=False)
+
+    user = relationship("User", back_populates="chat_sessions", lazy="selectin")
+    messages = relationship(
+        "ChatMessage",
+        back_populates="session",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+    )
+
+
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+
+    session_id: Mapped[int] = mapped_column(ForeignKey("chat_sessions.id"), nullable=False)
+    role: Mapped[str] = mapped_column(String(32), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    files_metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+
+    session = relationship("ChatSession", back_populates="messages", lazy="selectin")
+    files = relationship(
+        "ChatFile",
+        back_populates="message",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+    )
+
+
+class ChatFile(Base):
+    __tablename__ = "chat_files"
+
+    message_id: Mapped[int] = mapped_column(ForeignKey("chat_messages.id"), nullable=False)
+    filename: Mapped[str] = mapped_column(String, nullable=False)
+    file_path: Mapped[str] = mapped_column(String, nullable=False)
+    size_bytes: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    mime_type: Mapped[str] = mapped_column(String(128), nullable=False)
+
+    message = relationship("ChatMessage", back_populates="files", lazy="selectin")

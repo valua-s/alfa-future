@@ -29,7 +29,6 @@ async def get_financial_summary_by_assistaint(
     data: Annotated[FileDto,
                     Body(media_type=RequestEncodingType.MULTI_PART)],
 ) -> CheckContractResutlDto:
-    # TODO: agent integration with accountain
     return CheckContractResutlDto(
         current=File(
             path="file_path",
@@ -62,4 +61,4 @@ async def post_message(
         from_service=AgentFunctions.FINANCE,
         files=files_bytes
     )
-    # TODO: agent integration with financial for chat
+    return ResponseFromBackDto(answer_text="not implemented")

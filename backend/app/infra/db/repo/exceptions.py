@@ -5,7 +5,6 @@ from litestar.exceptions import HTTPException
 
 
 class CommitError(HTTPException):
-    """Ошибка при создании."""
     def __init__(self, detail: Exception | None = None) -> None:
         super().__init__(
             status_code=status_codes.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -14,7 +13,6 @@ class CommitError(HTTPException):
 
 
 class RollbackError(HTTPException):
-    """Ошибка при откате."""
     def __init__(self, detail: Exception | None = None) -> None:
         super().__init__(
             status_code=status_codes.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -23,7 +21,6 @@ class RollbackError(HTTPException):
 
 
 class UnexpectedError(HTTPException):
-    """Непредвиденная ошибка."""
     def __init__(self, detail: Exception | None = None) -> None:
         super().__init__(
             status_code=status_codes.HTTP_500_INTERNAL_SERVER_ERROR,
